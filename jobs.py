@@ -15,7 +15,7 @@ from selenium.webdriver import Chrome, ChromeOptions
 #########################################33
 options = webdriver.ChromeOptions()
 options.add_experimental_option("prefs", {
-  "download.default_directory": "D:\\Backup",
+  "download.default_directory": "D:\\Backup",#you must create this directory or change it
   "download.prompt_for_download": False,
   "download.directory_upgrade": True,
   "safebrowsing.enabled": True,
@@ -29,7 +29,7 @@ driver.get("https://www.emploi-public.ma/FR/index.asp?p=1")
 el=driver.find_elements(By.CSS_SELECTOR,"td a")
 for e in el:
     #if "Technicien" in e.text and "9" in e.text:
-    if "Echelle 9"in e.text :
+    if "Echelle 9"in e.text : 
         links.append(e.get_attribute("href"))   
 for link in links:
     driver.get(link)

@@ -32,7 +32,7 @@ links=[]
 driver.get("https://www.emploi-public.ma/FR/index.asp?p=1")
 el=driver.find_elements(By.CSS_SELECTOR,"td a")
 for e in el:
-    if "Echelle 11" in e.text : # if you want to search for another level,only change number 9 EX:'TS:9,lp:10.....'
+    if "Echelle 11" in e.text : # if you want to search for another level,only change number 11 EX:'TS:9,lp:10.....'
       links.append(e.get_attribute("href")) 
 for link in links:
     driver.get(link)

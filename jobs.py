@@ -13,7 +13,7 @@ if not os.path.exists(directory):
 
 
 options = webdriver.ChromeOptions()
-options.headless = False
+options.headless = True
 options.add_experimental_option("prefs", {
     "download.default_directory": directory,
     "download.prompt_for_download": False,

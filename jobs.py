@@ -1,47 +1,50 @@
-from msilib.schema import Directory
-from ssl import Options
+import hashlib
+import os
+from pathlib import Path
 from time import sleep
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver import Chrome, ChromeOptions
-import os
-import hashlib
-from pathlib import Path
-#//////////////////////////////////////////////////
-#This is  a job search script on the "emploi public"
-################ ESSALHI {kUROKO007} ##############
-#//////////////////////////////////////////////////
-directory=f"C:\\Users\\{os.getlogin()}\\Desktop\\Jobs"
+from selenium.webdriver.common.by import By
+
+
+directory = f"C:\\Users\\{os.getlogin()}\\Desktop\\Jobs"      
 if not os.path.exists(directory):
     os.makedirs(directory)
-######################################################
+
+
 options = webdriver.ChromeOptions()
+options.headless = False
 options.add_experimental_option("prefs", {
-  "download.default_directory": directory,
-  "download.prompt_for_download": False,
-  "download.directory_upgrade": True,
-  "safebrowsing.enabled": True,
-  "plugins.always_open_pdf_externally": True
+    "download.default_directory": directory,
+    "download.prompt_for_download": False,
+    "download.directory_upgrade": True,
+    "safebrowsing.enabled": True,
+    "plugins.always_open_pdf_externally": True
 })
-####################################################
+
+
 driver = webdriver.Chrome(options=options)
-#####################################################33
-links=[]
+links = []
 driver.get("https://www.emploi-public.ma/FR/index.asp?p=1")
-el=driver.find_elements(By.CSS_SELECTOR,"td a")
+el = driver.find_elements(By.CSS_SELECTOR, "td a")
+echelle_levels = ['Echelle 8','Echelle 9', 'Echelle 10', 'Echelle 11']
 for e in el:
-    if "Echelle 11" in e.text : # if you want to search for another level,only change number 11 EX:'TS:9,lp:10.....'
-      links.append(e.get_attribute("href")) 
+    for level in echelle_levels:
+        if level in e.text:
+            links.append(e.get_attribute("href")) 
+
+
 for link in links:
     driver.get(link)
-    driver.find_element(By.XPATH,"//a[@class='btn btn-block btn-social btn-down']").click()
+    try:
+        download_button = driver.find_element(By.XPATH, "//a[@class='btn btn-block btn-social btn-down']")
+        download_button.click()
+        sleep(5) # Wait for file to download
+    except:
+        print("Could not download file from:", link)
 
-##############################################################
-#################Remove duplicate Files#######################
-##############################################################
-file_path =f"C:\\Users\\{os.getlogin()}\\Desktop\\jobs"
+
+file_path = f"C:\\Users\\{os.getlogin()}\\Desktop\\jobs"
 list_files = os.walk(file_path)
 unique_files = dict()
 for root, folders, files in list_files:
@@ -52,5 +55,7 @@ for root, folders, files in list_files:
             unique_files[Hash_file] = file_path
         else:
             os.remove(file_path)
-sleep(100)
+
+
+sleep(10)
 driver.quit()
